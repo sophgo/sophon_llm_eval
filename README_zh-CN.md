@@ -1,6 +1,6 @@
 ## 介绍
 
-本仓库 sophon_llm_eval fork 自仓库 [OpenCompass](https://github.com/open-compass/opencompass)，支持 OpenCompass 的全部功能，并支持算能 bmodel 的全流程评测。更多 OpenCompass 的更多信息请参考[官方文档](https://github.com/open-compass/opencompass/blob/main/README_zh-CN.md)
+本仓库 opencompass-tpu fork 自仓库 [OpenCompass](https://github.com/open-compass/opencompass)，支持 OpenCompass 的全部功能，并支持算能 bmodel 的全流程评测。更多 OpenCompass 的更多信息请参考[官方文档](https://github.com/open-compass/opencompass/blob/main/README_zh-CN.md)
 
 ## 🛠️ 安装指南
 
@@ -32,7 +32,7 @@
 
 ## 🏗️ ️评测
 
-sophon_llm_eval 支持两种评测方式：配置config、使用命令行
+opencompass-tpu 支持两种评测方式：配置config、使用命令行
 
 - ### [推荐]配置 config 评测
 

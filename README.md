@@ -1,5 +1,5 @@
 ## Introduction
-The sophon_llm_eval is a fork of [OpenCompass](https://github.com/open-compass/opencompass). It supports all OpenCompass features and provides end-to-end evaluation for Sophgo bmodel. For more details on OpenCompass, please refer to the [official documentation](https://github.com/open-compass/opencompass/blob/main/README_zh-CN.md).
+The opencompass-tpu is a fork of [OpenCompass](https://github.com/open-compass/opencompass). It supports all OpenCompass features and provides end-to-end evaluation for Sophgo bmodel. For more details on OpenCompass, please refer to the [official documentation](https://github.com/open-compass/opencompass/blob/main/README_zh-CN.md).
 
 
 ## 🛠️ Installation Guide
@@ -27,7 +27,7 @@ We strongly recommend using conda to manage your Python environment.
 
 
 ## 🏗️ Evaluation
-sophon_llm_eval supports two evaluation modes: config-based and CLI-based.
+opencompass-tpu supports two evaluation modes: config-based and CLI-based.
 
 - ### [Recommended] Config-based Evaluation
   Refer to opencompass/configs/models/qwen2_5/sg_qwen2_5_3b_instruct.py:

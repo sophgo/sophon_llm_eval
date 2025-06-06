@@ -11,7 +11,8 @@ from opencompass.models import (VLLM, HuggingFace, HuggingFaceBaseModel,
                                 HuggingFaceCausalLM, HuggingFaceChatGLM3,
                                 HuggingFacewithChatTemplate,
                                 TurboMindModelwithChatTemplate,
-                                VLLMwithChatTemplate)
+                                VLLMwithChatTemplate,
+                                SophgoModel)
 from opencompass.partitioners import NaivePartitioner, NumWorkerPartitioner
 from opencompass.runners import DLCRunner, LocalRunner, SlurmRunner
 from opencompass.tasks import OpenICLEvalTask, OpenICLInferTask
@@ -159,7 +160,7 @@ def get_config_from_arg(args) -> Config:
             _dataset['k'] = args.dataset_num_runs
 
     # parse model args
-    if not args.models and not args.hf_path:
+    if not args.models and not args.hf_path and not args.sophgo_mode:
         raise ValueError('You must specify a config file path, or specify --models and --datasets, or specify HuggingFace model parameters and --datasets.')
     models = []
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -179,25 +180,44 @@ def get_config_from_arg(args) -> Config:
                     raise ValueError(f'Config file {model[1]} does not contain "models" field')
                 models += cfg['models']
     else:
-        if args.hf_type == 'chat':
-            mod = HuggingFacewithChatTemplate
+        if args.sophgo_mode:
+            mod = SophgoModel
+            model = dict(type=f'{mod.__module__}.{mod.__name__}',
+                        abbr=args.model_path.split('/')[-1] + '_sophgo',
+                        model_path=args.model_path,
+                        sg_tokenizer_path=args.sg_tokenizer_path,
+                        max_out_len=args.max_out_len,
+                        batch_size=1,
+                        device=args.device,
+                        devid=args.devid,
+                        sample_kwargs=dict(
+                            temperature=args.temperature,
+                            top_p=args.top_p,
+                            repeat_penalty=args.repeat_penalty,
+                            repeat_last_n=args.repeat_last_n,
+                            generation_mode=args.generation_mode
+                        ),
+                        run_cfg=dict())
         else:
-            mod = HuggingFaceBaseModel
-        model = dict(type=f'{mod.__module__}.{mod.__name__}',
-                     abbr=args.hf_path.split('/')[-1] + '_hf',
-                     path=args.hf_path,
-                     model_kwargs=args.model_kwargs,
-                     tokenizer_path=args.tokenizer_path,
-                     tokenizer_kwargs=args.tokenizer_kwargs,
-                     generation_kwargs=args.generation_kwargs,
-                     peft_path=args.peft_path,
-                     peft_kwargs=args.peft_kwargs,
-                     max_seq_len=args.max_seq_len,
-                     max_out_len=args.max_out_len,
-                     batch_size=args.batch_size,
-                     pad_token_id=args.pad_token_id,
-                     stop_words=args.stop_words,
-                     run_cfg=dict(num_gpus=args.hf_num_gpus))
+            if args.hf_type == 'chat':
+                mod = HuggingFacewithChatTemplate
+            else:
+                mod = HuggingFaceBaseModel
+            model = dict(type=f'{mod.__module__}.{mod.__name__}',
+                        abbr=args.hf_path.split('/')[-1] + '_hf',
+                        path=args.hf_path,
+                        model_kwargs=args.model_kwargs,
+                        tokenizer_path=args.tokenizer_path,
+                        tokenizer_kwargs=args.tokenizer_kwargs,
+                        generation_kwargs=args.generation_kwargs,
+                        peft_path=args.peft_path,
+                        peft_kwargs=args.peft_kwargs,
+                        max_seq_len=args.max_seq_len,
+                        max_out_len=args.max_out_len,
+                        batch_size=args.batch_size,
+                        pad_token_id=args.pad_token_id,
+                        stop_words=args.stop_words,
+                        run_cfg=dict(num_gpus=args.hf_num_gpus))
         logger.debug(f'Using model: {model}')
         models.append(model)
     # set infer accelerator if needed

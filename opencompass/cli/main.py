@@ -162,6 +162,9 @@ def parse_args():
         default=1,
     )
 
+    # set sophgo tpu args
+    tpu_parser = parser.add_argument_group('tpu_args')
+    parse_tpu_args(tpu_parser)
     # set srun args
     slurm_parser = parser.add_argument_group('slurm_args')
     parse_slurm_args(slurm_parser)
@@ -225,7 +228,7 @@ def parse_hf_args(hf_parser):
     hf_parser.add_argument('--max-seq-len', type=int, help='The max sequence length for the HuggingFace model')
     hf_parser.add_argument('--max-out-len', type=int, default=256, help='The max output length for the HuggingFace model')
     hf_parser.add_argument('--min-out-len', type=int, default=1, help='The min output length for the HuggingFace model')
-    hf_parser.add_argument('--batch-size', type=int, default=8, help='The batch size for the HuggingFace model')
+    hf_parser.add_argument('--batch-size', type=int, default=1, help='The batch size for the HuggingFace model')
     hf_parser.add_argument('--num-gpus', type=int, default=None, help='Deprecated, please use --hf-num-gpus instead')
     hf_parser.add_argument('--hf-num-gpus', type=int, default=1, help='The number of GPUs for the HuggingFace model passed via cli')
     hf_parser.add_argument('--pad-token-id', type=int, help='The pad token id for the HuggingFace model')
@@ -242,6 +245,20 @@ def parse_custom_dataset_args(custom_dataset_parser):
     custom_dataset_parser.add_argument('--custom-dataset-infer-method',
                                        type=str,
                                        choices=['gen', 'ppl'])
+
+
+def parse_tpu_args(tpu_parser):
+    """These args are all for sophgo tpu."""
+    tpu_parser.add_argument('--sophgo_mode', action='store_true', help='if set, use sophgo inference mode')
+    tpu_parser.add_argument('--device', type=str, choices=['gpu', 'tpu'], default="gpu", help='whether to use gpu/tpu to inference')
+    tpu_parser.add_argument('--model_path', type=str, help='The path to the bmodel file, e.g. "./qwen2-1.5b_bf16_seq4096_1dev.bmodel"')
+    tpu_parser.add_argument('--sg_tokenizer_path', help='The path to the tokenizer')
+    tpu_parser.add_argument('--devid', type=str, default='0', help='device ID to use')
+    tpu_parser.add_argument('--temperature', type=float, default=1.0, help='temperature scaling factor for the likelihood distribution')
+    tpu_parser.add_argument('--top_p', type=float, default=1.0, help='cumulative probability of token words to consider as a set of candidates')
+    tpu_parser.add_argument('--repeat_penalty', type=float, default=1.0, help='penalty for repeated tokens')
+    tpu_parser.add_argument('--repeat_last_n', type=int, default=32, help='repeat penalty for recent n tokens')
+    tpu_parser.add_argument('--generation_mode', type=str, choices=["greedy", "penalty_sample"], default="greedy", help='mode for generating next token')
 
 
 def main():

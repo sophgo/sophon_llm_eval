@@ -38,6 +38,7 @@ from .qwen_api import Qwen  # noqa: F401
 from .rendu_api import Rendu  # noqa: F401
 from .sensetime_api import SenseTime  # noqa: F401
 from .stepfun_api import StepFun  # noqa: F401
+from .sophgo_model import SophgoModel # Sophgo models
 from .turbomind import TurboMindModel  # noqa: F401
 from .turbomind_with_tf_above_v4_33 import \
     TurboMindModelwithChatTemplate  # noqa: F401
